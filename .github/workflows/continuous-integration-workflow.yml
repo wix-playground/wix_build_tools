@@ -13,5 +13,6 @@ jobs:
     steps:
       - name: test
         run: |
-            ./testing/e2e.sh
+            ls
+            bash testing/e2e.sh
             
