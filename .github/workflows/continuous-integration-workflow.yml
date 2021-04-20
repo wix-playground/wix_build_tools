@@ -11,8 +11,9 @@ jobs:
     container:
       image: l.gcr.io/google/bazel:3.5.0
     steps:
+      - uses: actions/checkout@v2
       - name: test
         run: |
-            ls
-            bash testing/e2e.sh
+            ./testing/e2e.sh
+            
             
