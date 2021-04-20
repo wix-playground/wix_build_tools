@@ -1,0 +1,17 @@
+name: CI
+
+on: [push]
+
+jobs:
+  
+  build:
+    name: e2e
+    # This job runs on Linux
+    runs-on: ubuntu-18.04
+    container:
+      image: l.gcr.io/google/bazel:3.5.0
+    steps:
+      - name: test
+        run: |
+            ./testing/e2e.sh
+            
