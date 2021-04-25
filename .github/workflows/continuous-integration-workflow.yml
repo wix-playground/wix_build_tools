@@ -5,14 +5,14 @@ on: [push]
 jobs:
   
   build:
-    name: e2e
+    name: E2E Tests
     # This job runs on Linux
     runs-on: ubuntu-18.04
     container:
       image: l.gcr.io/google/bazel:3.5.0
     steps:
       - uses: actions/checkout@v2
-      - name: test
+      - name: git_cached_repository tests
         run: |
             ./testing/e2e.sh
             

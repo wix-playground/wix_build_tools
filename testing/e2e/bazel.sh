@@ -35,8 +35,4 @@ function create_clean_workspace() {
   else
     create_workspace_with_default_repos ${WORKSPACE_DIR}/WORKSPACE
   fi
-
-  copy_git_cached_repo_rules_to_workspace
-
-  bazel clean --expunge
 }

@@ -2,12 +2,12 @@
 
 function create_git_cached_rule_for_small_repo() {
   local commit_hash=$1
-  local cache_dir=${2:-${GIT_CACHE_DEFAULT_DIR}}
+  local cache_dir=${2:-"default-dir"}
 
   # Trim consecutive // characters since Bazel would fail if such exists on a target path
   local trimmed_path=$(echo ${WORKSPACE_DIR} | tr -s '/')
 
-  if [[ ${cache_dir} == *"use default cache directory"* ]]; then
+  if [[ ${cache_dir} == "default-dir" ]]; then
     cat >${WORKSPACE_DIR}/WORKSPACE <<EOF
 load("//rules/git:git_cached_repository.bzl", "git_cached_repository")
 git_cached_repository(

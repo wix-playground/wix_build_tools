@@ -1,5 +1,9 @@
 #!/bin/bash
 
+function set_git_cached_repo_path() {
+  export TEST_GIT_CACHE_DIR=${TEST_TMPDIR}/git-cache-${WORKSPACE_DIR}
+}
+
 function copy_git_cached_repo_rules_to_workspace() {
   if [[ -z "${RULES_GIT_DIR:-}" ]]; then
     export RULES_GIT_DIR=${WORKSPACE_DIR}/rules/git
