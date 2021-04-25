@@ -1,4 +1,4 @@
-load("//git:git_cached_worker.bzl", "checkout", "clone", "fetch")
+load("//rules/git:git_cached_worker.bzl", "checkout", "clone", "fetch")
 
 """Rules for caching external git repositories in favor of keeping a lighter git network overhead."""
 
