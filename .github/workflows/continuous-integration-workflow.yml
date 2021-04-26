@@ -14,7 +14,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: git_cached_repository tests
         run: |
-#            ./testing/e2e.sh
-            which git
-            
+            ./testing/git_cached_repository.sh
+
             
