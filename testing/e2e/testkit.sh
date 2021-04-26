@@ -75,8 +75,8 @@ function create_new_commit_on_small_repo() {
   cwd=$(pwd)
   cd ${REPO_SMALL_DIR}
   echo "correct dorothy, we are in bazel world" >${REPO_SMALL_DIR}/quotes/the_wizard_of_oz.txt
-  /usr/bin/git add "quotes/the_wizard_of_oz.txt" >/dev/null 2>&1
-  /usr/bin/git commit -m "Updated a quote to generate a new commit" >/dev/null 2>&1
+  /usr/bin/git add "quotes/the_wizard_of_oz.txt" >>${TEST_log}
+  /usr/bin/git commit -m "Updated a quote to generate a new commit" >>${TEST_log}
   new_commit=$(/usr/bin/git log -n 1 --pretty=format:%H)
   cd $cwd
 

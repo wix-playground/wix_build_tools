@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Configure git
+git config --global user.email "wix_build_tools@wix.com"
+git config --global user.name "Wix"
+
 if [[ -z "${TEST_TMPDIR:-}" ]]; then
   export TEST_TMPDIR="$(mktemp -d ${TMPDIR:-/tmp}/bazel-test.XXXXXXXX)"
 fi
