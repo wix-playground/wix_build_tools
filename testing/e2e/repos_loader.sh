@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Title        repos_loader.sh
+# Description  Load all mocked git repositories making their "local remote_url" available via env vars
+#=====================================================================================================
+
+source ./testing/e2e/logging.sh
+
 REPOS_DIR=""
 REPO_SMALL_DIR=""
 

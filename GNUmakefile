@@ -1,7 +1,7 @@
 default: help
 
-.PHONY: run-tests
-run-tests: ## Run tests suites locally (for containered CI)
+.PHONY: run-tests-ci
+run-tests-ci: ## Run tests suites on CI containerized environment
 	-@./testing/git_cached_repository/git_cached_repository.sh
 
 .PHONY: run-tests-dockerized
@@ -9,7 +9,7 @@ run-tests-dockerized: ## Run tests suites dockerized
 	-@docker run -it \
         -v $(PWD):/home/wix_build_tools \
         --entrypoint /bin/sh l.gcr.io/google/bazel:3.5.0 \
-        -c 'cd /home/wix_build_tools; make run-tests'
+        -c 'cd /home/wix_build_tools; make run-tests-ci'
 
 # To use on version 3.0.0 of Docker for mac - disable use gRPC FUSE for file sharing in Preferences -> Experimental Features.
 # Debug within the container by using:

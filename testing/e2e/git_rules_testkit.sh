@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Title        git_rules_testkit.sh
+# Description  Test kit for glueing together Bazel wiring and git_cached repo rules
+#==================================================================================
+
 function create_git_cached_rule_for_small_repo() {
   local commit_hash=$1
   local cache_dir=${2:-"default-dir"}
@@ -8,8 +12,8 @@ function create_git_cached_rule_for_small_repo() {
   local trimmed_path=$(echo ${WORKSPACE_DIR} | tr -s '/')
 
   if [[ ${cache_dir} == "default-dir" ]]; then
-    cat >${WORKSPACE_DIR}/WORKSPACE <<EOF
-load("//rules/git:git_cached_repository.bzl", "git_cached_repository")
+    cat >>${WORKSPACE_DIR}/WORKSPACE <<EOF
+load("@wix_build_tools//rules/git:git_cached_repository.bzl", "git_cached_repository")
 git_cached_repository(
     name = "small_repo",
     remote_url = "${REPO_SMALL_DIR}",
@@ -18,8 +22,8 @@ git_cached_repository(
 )
 EOF
   else
-    cat >${WORKSPACE_DIR}/WORKSPACE <<EOF
-load("//rules/git:git_cached_repository.bzl", "git_cached_repository")
+    cat >>${WORKSPACE_DIR}/WORKSPACE <<EOF
+load("@wix_build_tools//rules/git:git_cached_repository.bzl", "git_cached_repository")
 git_cached_repository(
     name = "small_repo",
     remote_url = "${REPO_SMALL_DIR}",
@@ -33,7 +37,7 @@ EOF
 
 function create_sh_lib_ref_small_repo() {
   target_name=quote_reader_lib
-  target_label="quotes:${target_name}"
+  target_label="//quotes:${target_name}"
 
   mkdir -p quotes
   cat >quotes/BUILD <<EOF

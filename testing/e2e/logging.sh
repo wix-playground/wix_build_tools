@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Title        logging.sh
+# Description  Logger to be used by the testing suite
+#====================================================
+
 function __show_log() {
   echo "-- Tests invocation log: -----------------------------------------------"
   [[ -e $TEST_log ]] && cat $TEST_log || echo "(Could not find log file.)"

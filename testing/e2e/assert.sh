@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Title        assert.sh
+# Description  Assertion functions used by testing suites
+#=========================================================
+
 function expect_log() {
   local pattern=$1
   local message=${2:-Expected regexp not found. pattern: "'$pattern'"}

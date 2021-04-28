@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Title        utils.sh
+# Description  General utilities
+#===============================
+
+source ./testing/e2e/logging.sh
+
 COLOR_RED='\033[0;31m'
 COLOR_GREEN='\033[0;32m'
 COLOR_WHITE='\033[1;37m'

@@ -1,8 +1,20 @@
 #!/bin/bash
 
+# Title        bazel.sh
+# Description  Bazel utilities for setting up a WORKSPACE scoped test environment
+#================================================================================
+
 function write_workspace_file() {
-  cat > "$1" << EOF
-workspace(name = "$2")
+  local file_name=$1
+  local workspace_name=$2
+
+  export WIX_BUILD_TOOLS_DIR=${TEST_TMPDIR}/wix_build_tools
+  cat > "${file_name}" << EOF
+workspace(name = "${workspace_name}")
+local_repository(
+    name = "wix_build_tools",
+    path = "${WIX_BUILD_TOOLS_DIR}",
+)
 EOF
 }
 
