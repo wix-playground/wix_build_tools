@@ -2,11 +2,11 @@ default: help
 
 .PHONY: run-tests-ci
 run-tests-ci: ## Run tests suites on CI containerized environment
-	-@./testing/git_cached_repository/git_cached_repository.sh
+	./testing/git_cached_repository/git_cached_repository.sh
 
 .PHONY: run-tests-dockerized
 run-tests-dockerized: ## Run tests suites dockerized
-	-@docker run -it \
+	docker run -it \
         -v $(PWD):/home/wix_build_tools \
         --entrypoint /bin/sh l.gcr.io/google/bazel:3.5.0 \
         -c 'cd /home/wix_build_tools; make run-tests-ci'
