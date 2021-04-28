@@ -12,6 +12,7 @@ configure_git_client
 function copy_wix_build_tools_to_test_env() {
   test_dir=$1
   mkdir -p -m 0700 "${test_dir}/wix_build_tools"
+  # TODO: Need to ignore .git folder
   cp -r . ${test_dir}/wix_build_tools
 }
 

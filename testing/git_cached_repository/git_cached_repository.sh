@@ -106,7 +106,7 @@ function test_checkout_post_fetch_is_successful() {
   new_commit=$(create_new_commit_on_small_repo)
 
   # And I re-declare the git cache rule with the new commit
-  create_git_cached_rule_for_small_repo ${new_commit}
+  recreate_git_cached_rule_for_small_repo ${new_commit} ${TEST_GIT_CACHE_DIR}
 
   # And I run the shell binary target label again
   bazel run ${target_label} >&${TEST_log} ||

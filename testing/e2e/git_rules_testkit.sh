@@ -4,6 +4,16 @@
 # Description  Test kit for glueing together Bazel wiring and git_cached repo rules
 #==================================================================================
 
+source ./testing/e2e/bazel.sh
+
+function recreate_git_cached_rule_for_small_repo() {
+  # Re-create WORKSPACE file and re-declare git_cached_repository with the new commit hash
+  create_workspace_file_targeting_wix_build_tools "${WORKSPACE_DIR}/WORKSPACE"
+  local commit_hash=$1
+  local cache_dir=${2:-"default-dir"}
+  create_git_cached_rule_for_small_repo ${commit_hash} ${cache_dir}
+}
+
 function create_git_cached_rule_for_small_repo() {
   local commit_hash=$1
   local cache_dir=${2:-"default-dir"}
