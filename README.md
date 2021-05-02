@@ -2,12 +2,12 @@
 
 <h3 id="wix-logo">
 	<img src="assets/icons/bazel.svg" height="80" width="80">BUILD 
-	<img src="assets/icons/wix.svg" height="80" width="140">EXTEND
+	<img src="assets/icons/wix.svg" height="80" width="140"> EXTEND
 </h3>
 
 <br>
 
-A place for rules and macros that were built inside [Wix](https://www.wix.engineering/){:target="_blank"}.
+A place for rules and macros that were built inside [Wix](https://www.wix.engineering/).
 
 [![Build status](https://github.com/wix-playground/wix_build_tools/actions/workflows/continuous-integration-workflow.yml/badge.svg)](https://github.com/wix-playground/wix_build_tools/actions/workflows/continuous-integration-workflow.yml)
 
@@ -26,7 +26,9 @@ A place for rules and macros that were built inside [Wix](https://www.wix.engine
 
 <h2 id="overview">Overview</h2>
 
-Add an overview of this repository, why was it created, which challenges are we going to tackle?
+This repository contains a set of rules created and used within Wix.
+It was created to solve requirements which did not have an off-the-shelf solutions to cope with challenges at large scale.
+Please note that some offering of this repository might be in an alpha/beta phase, be aware before adopting solutions based on this repository.
 
 | :heavy_exclamation_mark: Preliminary Steps |
 | :--------------------------------------- |
@@ -81,10 +83,17 @@ Add an overview of this repository, why was it created, which challenges are we 
 <h3 id="git_cached_repository">git_cached_repository</h3>
 
 Rule for caching external git repositories in favor of keeping a lighter git network overhead.
+Utilizing the [`GIT_DIR`](https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables) environment variable, it maintains a shared git index across all local workspaces (defaults to `$HOME/.git-cache`).
+In case a revision is not available, a git fetch takes place to retrieve the deltas and then perform another checkout.
+In order to lower index size, `HEAD` references are being fetched from `master` branch (_configurable_) and using `shallow_since` to limit history and stale content (_configurable as well_).
+
+| :heavy_exclamation_mark: WARNING |
+| :--------------------------------------- |
+| This repository rule is still in **alpha stage**, use it with caution !<br>Please open a GitHub Issue/PR for any potential issues you might encounter. |
 
 <h4 id="git_cached_repository_usage">Usage</h4>
 
-Add the following declaration to your `WORKSPACE` file to use a cached external repository:
+Add the following declaration to any `*.bzl` file to cache an external git repository:
 
 ```python
 git_cached_repository(
