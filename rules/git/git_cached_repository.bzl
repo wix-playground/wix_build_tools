@@ -1,6 +1,6 @@
 load("//rules/git:git_cached_worker.bzl", "checkout", "clone", "fetch")
 
-"""Rules for caching external git repositories in favor of keeping a lighter git network overhead."""
+"""Rule for caching external git repositories in favor of keeping a lighter git network overhead."""
 
 load(
     "@bazel_tools//tools/build_defs/repo:utils.bzl",
@@ -18,7 +18,7 @@ _common_attrs = {
     ),
     "commit": attr.string(
         mandatory = True,
-        doc = "Specific commit to be checked out",
+        doc = "Specific commit to get checked out",
     ),
     "branch": attr.string(
         default = "master",
