@@ -26,9 +26,7 @@ A place for rules and macros that were built inside [Wix](https://www.wix.engine
 
 <h2 id="overview">Overview</h2>
 
-This repository contains a set of rules created and used within Wix.
-It was created to solve requirements which did not have an off-the-shelf solutions to cope with challenges at large scale.
-Please note that some offering of this repository might be in an alpha/beta phase, be aware before adopting solutions based on this repository.
+This repository currently contains the `git_cached_repository` rule. Please note that this is still in alpha phase. Feel free to try it out but be aware that there may still be uncovered cases, and that the API might change.
 
 | :heavy_exclamation_mark: Preliminary Steps |
 | :--------------------------------------- |
@@ -42,11 +40,12 @@ Please note that some offering of this repository might be in an alpha/beta phas
 
    ```python
    wix_build_tools_version="f9b27a7c3fc30532d9bab2b8e2ca3f9f3d1f83b9"
+   wix_build_tools_version_sha256="d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed"
    http_archive(
        name = "wix_build_tools",
        urls = ["https://github.com/wix-playground/wix_build_tools/archive/%s.zip" % wix_build_tools_version],
        strip_prefix = "wix_build_tools-%s" % wix_build_tools_version,
-       sha256 = "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed",
+       sha256 = wix_build_tools_version_sha256,
    )
    ```
 
@@ -141,4 +140,3 @@ git_cached_repository(
 <h2 id="faq">FAQ</h2>
 
 Help !
-
