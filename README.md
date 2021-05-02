@@ -30,7 +30,7 @@ Add an overview of this repository, why was it created, which challenges are we 
 
 | :heavy_exclamation_mark: Preliminary Steps |
 | :--------------------------------------- |
-| Before starting, make sure you have Bazel [properly installed](https://docs.bazel.build/install.html) and are familiar with the Bazel [getting started]((https://docs.bazel.build/getting-started.html)) guide. |
+| Before starting, make sure you have Bazel [properly installed](https://docs.bazel.build/install.html) and are familiar with the Bazel [getting started](https://docs.bazel.build/getting-started.html) guide. |
 
 <br>
 
@@ -48,7 +48,7 @@ Add an overview of this repository, why was it created, which challenges are we 
    )
    ```
 
-1. Load the repository rule in any `BUILD` file you wish to use `git_cached_repository`:
+1. Load the repository rule in any `*.bzl` file you wish to use `git_cached_repository`:
 
    ```python
    load("@wix_build_tools//git:git_cached_repository.bzl", "git_cached_repository")
