@@ -9,39 +9,55 @@ source ./testing/e2e/bazel.sh
 function recreate_git_cached_rule_for_small_repo() {
   # Re-create WORKSPACE file and re-declare git_cached_repository with the new commit hash
   create_workspace_file_targeting_wix_build_tools "${WORKSPACE_DIR}/WORKSPACE"
-  local commit_hash=$1
-  local cache_dir=${2:-"default-dir"}
-  create_git_cached_rule_for_small_repo ${commit_hash} ${cache_dir}
+  create_git_cached_rule_for_small_repo "$@" # forwards args as one string per argument
 }
 
 function create_git_cached_rule_for_small_repo() {
-  local commit_hash=$1
-  local cache_dir=${2:-"default-dir"}
+  local newline="\r\n"
+  local spaces="    "
+  while [[ "$#" -gt 0 ]]
+  do
+    case "$1" in
+      commit*)
+        local commit="${newline}${spaces}${1},"
+        shift
+        ;;
+      remote_url*)
+        local remote_url="${newline}${spaces}${1},"
+        shift
+        ;;
+      branch*)
+        local branch="${newline}${spaces}${1},"
+        shift
+        ;;
+      cache_directory*)
+        local cache_directory="${newline}${spaces}${1},"
+        shift
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  # Set defaults
+  commit=${commit="${newline}${spaces}commit = missing-commit-hash,"}  # no defaults for commit hash
+  remote_url=${remote_url="${newline}${spaces}remote_url = '${REPO_SMALL_DIR}',"}
+  branch=${branch="${newline}${spaces}branch = 'master',"}
+  cache_directory=${cache_directory=''} # use rule default cache directory if none supplied
 
   # Trim consecutive // characters since Bazel would fail if such exists on a target path
   local trimmed_path=$(echo ${WORKSPACE_DIR} | tr -s '/')
 
-  if [[ ${cache_dir} == "default-dir" ]]; then
-    cat >>${WORKSPACE_DIR}/WORKSPACE <<EOF
-load("@wix_build_tools//rules/git:git_cached_repository.bzl", "git_cached_repository")
+  echo -e """
+load(\"@wix_build_tools//rules/git:git_cached_repository.bzl\", \"git_cached_repository\")
 git_cached_repository(
-    name = "small_repo",
-    remote_url = "${REPO_SMALL_DIR}",
-    commit = "${commit_hash}",
-    branch = "master",
+    name = \"small_repo\",${commit}${remote_url}${branch}${cache_directory}
 )
-EOF
-  else
-    cat >>${WORKSPACE_DIR}/WORKSPACE <<EOF
-load("@wix_build_tools//rules/git:git_cached_repository.bzl", "git_cached_repository")
-git_cached_repository(
-    name = "small_repo",
-    remote_url = "${REPO_SMALL_DIR}",
-    commit = "${commit_hash}",
-    branch = "master",
-    cache_directory = "${cache_dir}",
-)
-EOF
+""" >> ${WORKSPACE_DIR}/WORKSPACE
+
+  if [[ "${GIT_CACHED_RULES_VERBOSE}" == "True" ]]; then
+    cat ${WORKSPACE_DIR}/WORKSPACE
   fi
 }
 

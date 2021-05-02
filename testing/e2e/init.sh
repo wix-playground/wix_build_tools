@@ -11,7 +11,8 @@ configure_git_client
 
 function copy_wix_build_tools_to_test_env() {
   test_dir=$1
-  mkdir -p -m 0700 "${test_dir}/wix_build_tools"
+  export WIX_BUILD_TOOLS_DIR=${test_dir}/wix_build_tools
+  mkdir -p -m 0700 ${WIX_BUILD_TOOLS_DIR}
   # TODO: Need to ignore .git folder
   cp -r . ${test_dir}/wix_build_tools
 }
@@ -34,9 +35,9 @@ TEST_name=""
 TEST_log=$TEST_TMPDIR/log
 
 # Cleanup test environment upon exit
-trap 'cleanup' EXIT
+trap 'clean_test_environment' EXIT
 
-function cleanup() {
+function clean_test_environment() {
   # Clean TEST_TMPDIR and verify path contains an identifier before deletion
   if [[ -d ${TEST_TMPDIR} && "${TEST_TMPDIR}" == *"bazel-test"* ]]; then
     rm -rf ${TEST_TMPDIR}
