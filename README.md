@@ -26,15 +26,17 @@ A place for rules and macros that were built inside [Wix](https://www.wix.com).
 
 <h2 id="overview">Overview</h2>
 
-* [Install Bazel](https://docs.bazel.build/install.html)
-* [Get started with Bazel](https://docs.bazel.build/getting-started.html)
-* [Who is using Bazel?](https://github.com/bazelbuild/bazel/wiki/Bazel-Users)
+Add an overview of this repository, why was it created, which challenges are we going to tackle?
+
+| :warning: Perquisites |
+| :--------------------------------------- |
+| Before starting, make sure you have Bazel [properly installed](https://docs.bazel.build/install.html) and are familiar with the Bazel [getting started]((https://docs.bazel.build/getting-started.html)) guide. |
 
 <br>
 
 <h2 id="getting-started">Getting Started</h2>
 
-1. Add the following to your `WORKSPACE` file to add the external repositories:
+1. Add the following to your `WORKSPACE` file to reference this external repository:
 
    ```python
    wix_build_tools_version="f9b27a7c3fc30532d9bab2b8e2ca3f9f3d1f83b9"
@@ -46,7 +48,13 @@ A place for rules and macros that were built inside [Wix](https://www.wix.com).
    )
    ```
 
-1. Calculate SHA256 for a specific commit (copy & paste into your terminal):
+1. Load the repository rule in any `BUILD` file you wish to use `git_cached_repository`:
+
+   ```python
+   load("@wix_build_tools//git:git_cached_repository.bzl", "git_cached_repository")
+   ```
+
+1. **(Optional):** Calculate SHA256 for a specific commit (copy & paste into your terminal):
 
    ```bash
    bash <<'EOF'
@@ -64,12 +72,6 @@ A place for rules and macros that were built inside [Wix](https://www.wix.com).
    cd ${cwd}
    
    EOF
-   ```
-
-1. Load the repository rule in any `BUILD` file you wish to use `git_cached_repository`:
-
-   ```python
-   load("@wix_build_tools//git:git_cached_repository.bzl", "git_cached_repository")
    ```
 
 <br>
