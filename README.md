@@ -2,7 +2,7 @@
 
 <h3 id="wix-logo">
 	<img src="assets/icons/bazel.svg" height="80" width="80">BUILD 
-	<img src="assets/icons/wix.svg" height="140" width="140">EXTEND
+	<img src="assets/icons/wix.svg" height="80" width="80">EXTEND
 </h3>
 
 <br>
