@@ -2,12 +2,12 @@
 
 <h3 id="wix-logo">
 	<img src="assets/icons/bazel.svg" height="80" width="80">BUILD 
-	<img src="assets/icons/musa.svg" height="80" width="80">EXTEND
+	<img src="assets/icons/wix.svg" height="140" width="140">EXTEND
 </h3>
 
 <br>
 
-A place for rules and macros that were built inside [Wix](https://www.wix.com).
+A place for rules and macros that were built inside [Wix](https://www.wix.engineering/).
 
 [![Build status](https://github.com/wix-playground/wix_build_tools/actions/workflows/continuous-integration-workflow.yml/badge.svg)](https://github.com/wix-playground/wix_build_tools/actions/workflows/continuous-integration-workflow.yml)
 
@@ -89,7 +89,7 @@ Add the following declaration to your `WORKSPACE` file to use a cached external 
 ```python
 git_cached_repository(
     name = "my-super-repository",
-    remote_url = "https://github.com/organization/repository.git",
+    remote_url = "https://github.com/<organization-name>/<repository-name>.git",
     commit = "repository-revision",
     shallow_since = "4 weeks ago",
 )
@@ -108,7 +108,7 @@ git_cached_repository(
 | `branch`     | `string`    | master
 | Specify a branch to fetch HEAD references
 | `shallow_since`     |  `string`  | none
-| An optional date in addition to a specified commit.<br>Setting such a date close to the specified commit allows for a more shallow clone of the repository, saving bandwidth
+| An optional date in addition to a specified commit.<br>Setting such a date close to the specified commit allows for a more shallow clone <br>of the repository, saving bandwidth
 | `cache_directory`     | `string`    | none
 | Local path to clone the repository into.<br>Default location is used to clone into `$HOME/.git-cache/<repo-name>`
 | `fetch_retries_count`     | `int`    | 2
