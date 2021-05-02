@@ -5,31 +5,28 @@
 	<img src="assets/icons/musa.svg" height="80" width="80">EXTEND
 </h3>
 
+<br>
+
 A place for rules and macros that were built inside [Wix](https://www.wix.com).
 
 [![Build status](https://github.com/wix-playground/wix_build_tools/actions/workflows/continuous-integration-workflow.yml/badge.svg)](https://github.com/wix-playground/wix_build_tools/actions/workflows/continuous-integration-workflow.yml)
 
-<h2 id="contents">Contents</h2>
-
 - [Overview](#overview)
 - [Getting Started](#getting-started)
-- [Contributing Guidelines](#contributing)
-- [FAQ](#faq)
-
-<h2 id="documentation">Documentation</h2>
-
 - [Rules](#rules)
    - [git_cached_repository](#git_cached_repository)
       - [Usage](#git_cached_repository_usage)
       - [Attributes](#git_cached_repository_attr)
-
----
+- [Contributing Guidelines](#contributing)
+- [FAQ](#faq)
 
 <h2 id="overview">Overview</h2>
 
 * [Install Bazel](https://docs.bazel.build/install.html)
 * [Get started with Bazel](https://docs.bazel.build/getting-started.html)
 * [Who is using Bazel?](https://github.com/bazelbuild/bazel/wiki/Bazel-Users)
+
+<br>
 
 <h2 id="getting-started">Getting Started</h2>
 
@@ -71,20 +68,7 @@ Load the repository rule in any `BUILD` file you wish to use `git_cached_reposit
 load("@wix_build_tools//git:git_cached_repository.bzl", "git_cached_repository")
 ```
 
-<h2 id="contributing">Contributing Guidelines</h2>
-
-- PRs need to have a clear description of the problem they are solving
-- PRs should be small
-- Code without tests is not accepted
-- Contributions must not add additional dependencies
-- Before creating a PR, make sure your code is well formatted, abstractions are named properly and design is simple
-- In case your contribution can't comply with any of the above please start a GitHub issue for discussion
-
-<h2 id="faq">FAQ</h2>
-
-Help !
-
----
+<br>
 
 <h2 id="rules">Rules</h2>
 
@@ -114,3 +98,21 @@ Rule for caching external git repositories in favor of keeping a lighter git net
 | Amount of retries attempts for fetching a repository before failing
 | `fetch_retry_timeout_in_sec`     | `int`    | 300 sec
 | Time to wait for a single fetch retry attempt
+
+<br>
+
+<h2 id="contributing">Contributing Guidelines</h2>
+
+- PRs need to have a clear description of the problem they are solving
+- PRs should be small
+- Code without tests is not accepted
+- Contributions must not add additional dependencies
+- Before creating a PR, make sure your code is well formatted, abstractions are named properly and design is simple
+- In case your contribution can't comply with any of the above please start a GitHub issue for discussion
+
+<br>
+
+<h2 id="faq">FAQ</h2>
+
+Help !
+
