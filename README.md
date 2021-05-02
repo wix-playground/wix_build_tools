@@ -28,7 +28,7 @@ A place for rules and macros that were built inside [Wix](https://www.wix.com).
 
 Add an overview of this repository, why was it created, which challenges are we going to tackle?
 
-| :warning: Perquisites |
+| :heavy_exclamation_mark: Preliminary Steps |
 | :--------------------------------------- |
 | Before starting, make sure you have Bazel [properly installed](https://docs.bazel.build/install.html) and are familiar with the Bazel [getting started]((https://docs.bazel.build/getting-started.html)) guide. |
 
