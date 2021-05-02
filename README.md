@@ -2,12 +2,12 @@
 
 <h3 id="wix-logo">
 	<img src="assets/icons/bazel.svg" height="80" width="80">BUILD 
-	<img src="assets/icons/wix.svg" height="80" width="80">EXTEND
+	<img src="assets/icons/wix.svg" height="80" width="140">EXTEND
 </h3>
 
 <br>
 
-A place for rules and macros that were built inside [Wix](https://www.wix.engineering/).
+A place for rules and macros that were built inside [Wix](https://www.wix.engineering/){:target="_blank"}.
 
 [![Build status](https://github.com/wix-playground/wix_build_tools/actions/workflows/continuous-integration-workflow.yml/badge.svg)](https://github.com/wix-playground/wix_build_tools/actions/workflows/continuous-integration-workflow.yml)
 
