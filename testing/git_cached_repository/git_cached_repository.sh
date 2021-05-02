@@ -84,7 +84,7 @@ function test_first_checkout_is_successful() {
   bazel run ${target_label} >&${TEST_log} ||
     echo "Expected to successfully fetch repo by commit hash"
 
-  # Then I expect the binary response to return the expected static string value
+  # Then I expect the response to return the expected static string value
   assert_expect_log "toto, I have a feeling we are not in maven anymore"
   after_test
 }
@@ -104,7 +104,7 @@ function test_checkout_post_fetch_is_successful() {
   bazel run ${target_label} >&${TEST_log} ||
     echo "Expected to successfully fetch repo by commit hash"
 
-  # Then I expect the binary response to return the expected static string value
+  # Then I expect the response to return the expected static string value
   assert_expect_log "toto, I have a feeling we are not in maven anymore"
 
   # When I create a new commit on the repository in test
@@ -144,7 +144,7 @@ function test_fetch_retry_count_retries_num_is_as_expected() {
   # And I run the shell binary target label
   bazel run ${target_label} >&${TEST_log} || true # This is negative scenario, we expect a failure
 
-  # Then I expect the binary response to return the expected static string value
+  # Then I expect to count x3 retries attempts
   assert_expect_log "Attempt #1..."
   assert_expect_log "Retry attempt #2..."
   assert_expect_log "Retry attempt #3..."
