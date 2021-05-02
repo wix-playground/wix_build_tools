@@ -31,7 +31,7 @@ function create_new_workspace_random_directory() {
 function create_build_file_on_workspace_root_folder() {
   workspace_dir=$1
 
-  cat >${workspace_dir}/BUILD <<EOF
+  cat >${workspace_dir}/BUILD.bazel <<EOF
 package(default_visibility = ["//visibility:public"])
 
 EOF

@@ -34,6 +34,14 @@ function create_git_cached_rule_for_small_repo() {
         local cache_directory="${newline}${spaces}${1},"
         shift
         ;;
+      fetch_retries_count*)
+        local fetch_retries_count="${newline}${spaces}${1},"
+        shift
+        ;;
+      fetch_retry_timeout_in_sec*)
+        local fetch_retry_timeout_in_sec="${newline}${spaces}${1},"
+        shift
+        ;;
       *)
         break
         ;;
@@ -44,7 +52,9 @@ function create_git_cached_rule_for_small_repo() {
   commit=${commit="${newline}${spaces}commit = missing-commit-hash,"}  # no defaults for commit hash
   remote_url=${remote_url="${newline}${spaces}remote_url = '${REPO_SMALL_DIR}',"}
   branch=${branch="${newline}${spaces}branch = 'master',"}
-  cache_directory=${cache_directory=''} # use rule default cache directory if none supplied
+  cache_directory=${cache_directory=''} # use rule default if none supplied
+  fetch_retries_count=${fetch_retries_count=''} # use rule default if none supplied
+  fetch_retry_timeout_in_sec=${fetch_retry_timeout_in_sec=''} # use rule default if none supplied
 
   # Trim consecutive // characters since Bazel would fail if such exists on a target path
   local trimmed_path=$(echo ${WORKSPACE_DIR} | tr -s '/')
@@ -52,7 +62,7 @@ function create_git_cached_rule_for_small_repo() {
   echo -e """
 load(\"@wix_build_tools//rules/git:git_cached_repository.bzl\", \"git_cached_repository\")
 git_cached_repository(
-    name = \"small_repo\",${commit}${remote_url}${branch}${cache_directory}
+    name = \"small_repo\",${commit}${remote_url}${branch}${cache_directory}${fetch_retries_count}${fetch_retry_timeout_in_sec}
 )
 """ >> ${WORKSPACE_DIR}/WORKSPACE
 
@@ -66,7 +76,7 @@ function create_sh_lib_ref_small_repo() {
   target_label="//quotes:${target_name}"
 
   mkdir -p quotes
-  cat >quotes/BUILD <<EOF
+  cat >quotes/BUILD.bazel <<EOF
 package(default_visibility = ["//visibility:public"])
 sh_library(
     name = "${target_name}",
@@ -82,7 +92,7 @@ function create_sh_binary_ref_small_repo() {
   target_label="quotes:${target_name}"
 
   mkdir -p quotes
-  cat >quotes/BUILD <<EOF
+  cat >quotes/BUILD.bazel <<EOF
 package(default_visibility = ["//visibility:public"])
 sh_binary(
     name = "${target_name}",
