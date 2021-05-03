@@ -40,7 +40,7 @@ This repository currently contains the `git_cached_repository` rule. Please note
 
    ```python
    wix_build_tools_version="f9b27a7c3fc30532d9bab2b8e2ca3f9f3d1f83b9"
-   wix_build_tools_version_sha256="d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed"
+   wix_build_tools_version_sha256="4c45cb488126aaba5218edeaecec1dac448a9c93b1010423d65b82b039713d69"
    http_archive(
        name = "wix_build_tools",
        urls = ["https://github.com/wix-playground/wix_build_tools/archive/%s.zip" % wix_build_tools_version],
