@@ -65,7 +65,7 @@ This repository currently contains the `git_cached_repository` rule. Please note
    repo_path=$(mktemp -d ${TMPDIR:-/tmp}/wix_build_tools-shasum.XXXXXX)
    cwd=$(pwd)
    cd ${repo_path}
-   curl -s https://github.com/wix-playground/wix_build_tools/archive/${REVISION}.zip \
+   curl -s https://github.com/wix-playground/wix_build_tools/archive/"${REVISION}".zip \
         -L -o wix_build_tools_${REVISION}.zip
    
    echo "SHA 256:"
