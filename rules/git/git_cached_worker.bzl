@@ -169,11 +169,7 @@ def _get_update_shallow(update_shallow):
 
 def _init(ctx, git_repo_info):
     cl = ["git", "init"]
-    exec_result = ctx.execute(
-        cl,
-        environment = ctx.os.environ,
-        working_directory = git_repo_info.cache_dir,
-    )
+    exec_result = _execute(ctx, git_repo_info, cl)
     if exec_result.return_code != 0:
         _error(ctx.name, cl, exec_result.stderr)
 
