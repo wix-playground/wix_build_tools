@@ -94,7 +94,7 @@ def _should_clone_repo(repo_ctx, repo_local_cache_path):
             "get-url",
             "origin",
         ]
-        st = repo_ctx.execute(args, quiet = False)
+        st = repo_ctx.execute(args, quiet = True)
         if st.return_code == 0:
             stripped_url = st.stdout.strip().replace("\n", "")
 
