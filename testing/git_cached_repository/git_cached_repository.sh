@@ -35,8 +35,8 @@ function test_cached_dir_created_as_expected() {
 
   # Given I declare a git cache rule with custom cache directory
   create_git_cached_rule_for_small_repo \
-     "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'" \
-     "cache_directory = '${TEST_GIT_CACHE_DIR}'"
+    "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'" \
+    "cache_directory = '${TEST_GIT_CACHE_DIR}'"
 
   # And I create a shell library to reference the git cache rule
   target_label=$(create_sh_lib_ref_small_repo)
@@ -55,7 +55,7 @@ function test_cached_default_dir_created_as_expected() {
 
   # Given I declare a git cache rule using the default cache directory
   create_git_cached_rule_for_small_repo \
-     "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'"
+    "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'"
 
   # And I create a shell library to reference the git cache rule
   target_label=$(create_sh_lib_ref_small_repo)
@@ -74,8 +74,8 @@ function test_first_checkout_is_successful() {
 
   # Given I declare a git cache rule with custom cache directory
   create_git_cached_rule_for_small_repo \
-     "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'" \
-     "cache_directory = '${TEST_GIT_CACHE_DIR}'"
+    "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'" \
+    "cache_directory = '${TEST_GIT_CACHE_DIR}'"
 
   # And I create a shell library to reference the git cache rule
   target_label=$(create_sh_binary_ref_small_repo)
@@ -84,7 +84,7 @@ function test_first_checkout_is_successful() {
   bazel run ${target_label} >&${TEST_log} ||
     echo "Expected to successfully fetch repo by commit hash"
 
-  # Then I expect the binary response to return the expected static string value
+  # Then I expect the response to return the expected static string value
   assert_expect_log "toto, I have a feeling we are not in maven anymore"
   after_test
 }
@@ -94,8 +94,8 @@ function test_checkout_post_fetch_is_successful() {
 
   # Given I declare a git cache rule with custom cache directory
   create_git_cached_rule_for_small_repo \
-     "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'" \
-     "cache_directory = '${TEST_GIT_CACHE_DIR}'"
+    "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'" \
+    "cache_directory = '${TEST_GIT_CACHE_DIR}'"
 
   # And I create a shell library to reference the git cache rule
   target_label=$(create_sh_binary_ref_small_repo)
@@ -104,7 +104,7 @@ function test_checkout_post_fetch_is_successful() {
   bazel run ${target_label} >&${TEST_log} ||
     echo "Expected to successfully fetch repo by commit hash"
 
-  # Then I expect the binary response to return the expected static string value
+  # Then I expect the response to return the expected static string value
   assert_expect_log "toto, I have a feeling we are not in maven anymore"
 
   # When I create a new commit on the repository in test
@@ -112,8 +112,8 @@ function test_checkout_post_fetch_is_successful() {
 
   # And I re-declare the git cache rule with the new commit
   recreate_git_cached_rule_for_small_repo \
-     "commit = '${new_commit}'" \
-     "cache_directory = '${TEST_GIT_CACHE_DIR}'"
+    "commit = '${new_commit}'" \
+    "cache_directory = '${TEST_GIT_CACHE_DIR}'"
 
   # And I run the shell binary target label again
   bazel run ${target_label} >&${TEST_log} ||
@@ -124,6 +124,35 @@ function test_checkout_post_fetch_is_successful() {
   after_test
 }
 
+function test_fetch_retry_count_retries_num_is_as_expected() {
+  before_test "test_fetch_retry_count_retries_num_is_as_expected"
+
+  # Given I declare a git cache rule with custom fetch retries count
+  create_git_cached_rule_for_small_repo \
+    "remote_url = 'https://the-road-to-nowhere.git'" \
+    "commit = 'l33tf4k3c0mm1757r1n6'" \
+    "cache_directory = '${TEST_GIT_CACHE_DIR}'" \
+    "fetch_retries_count = 3" \
+    "fetch_retry_timeout_in_sec = 2"
+
+  # And I allow verbosity for the git cached worker
+  export GIT_CACHED_VERBOSE=True
+
+  # And I create a shell library to reference the git cache rule
+  target_label=$(create_sh_binary_ref_small_repo)
+
+  # And I run the shell binary target label
+  bazel run ${target_label} >&${TEST_log} || true # This is negative scenario, we expect a failure
+
+  # Then I expect to count x3 retries attempts
+  assert_expect_log "Attempt #1..."
+  assert_expect_log "Retry attempt #2..."
+  assert_expect_log "Retry attempt #3..."
+
+  after_test
+  unset GIT_CACHED_VERBOSE
+}
+
 prepare_test_repositories ${REPOS_DIR}
 utils_log_tests_suite_header "git_cached_repository should"
 
@@ -131,3 +160,4 @@ test_cached_default_dir_created_as_expected
 test_cached_dir_created_as_expected
 test_first_checkout_is_successful
 test_checkout_post_fetch_is_successful
+test_fetch_retry_count_retries_num_is_as_expected
