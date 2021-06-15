@@ -120,6 +120,12 @@ def _create_local_cache_folder_for_repo(repo_ctx, repo_local_cache_path):
     args = ["mkdir", "-p", repo_local_cache_path]
     repo_ctx.execute(args, quiet = False)
 
+def _remove_git_lockfile_if_exists(repo_ctx, repo_local_cache_path):
+    lock_index_path = repo_local_cache_path + "/.git/index.lock"
+    if repo_ctx.path(lock_index_path).exists:
+        _log(repo_ctx, "Clearing git index.lock file. path: {}".format(lock_index_path))
+        repo_ctx.delete(lock_index_path)
+
 def _fresh_clone(repo_ctx, repo_local_cache_path):
     """ Clone a repository to a folder specified by the 'repo_local_cache_path' argument,
         clear previous directory if existed before
@@ -216,6 +222,7 @@ def _git_cached_repository_implementation(repo_ctx):
     if _should_clone_repo(repo_ctx, repo_local_cache_path):
         _fresh_clone(repo_ctx, repo_local_cache_path)
     else:
+        _remove_git_lockfile_if_exists(repo_ctx, repo_local_cache_path)
         _checkout_or_fetch(repo_ctx, repo_local_cache_path)
 
 git_cached_repository = repository_rule(

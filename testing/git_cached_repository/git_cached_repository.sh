@@ -153,6 +153,40 @@ function test_fetch_retry_count_retries_num_is_as_expected() {
   unset GIT_CACHED_VERBOSE
 }
 
+function test_checkout_on_cached_repo_with_index_lock_file_to_succeed() {
+  before_test "test_checkout_on_cached_repo_with_index_lock_file_to_succeed"
+
+  # Given I declare a git cache rule with custom cache directory
+  create_git_cached_rule_for_small_repo \
+    "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'" \
+    "cache_directory = '${TEST_GIT_CACHE_DIR}/index-locked-repo'"
+
+  # And I create a shell library to reference the git cache rule
+  target_label=$(create_sh_binary_ref_small_repo)
+
+  # And I build the shell library target label which triggers a one time fresh clone of the git repo
+  bazel run ${target_label} >&${TEST_log} || echo "Expected to successfully clone repo"
+
+  # When I create a new commit on the repository in test
+  new_commit=$(create_new_commit_on_small_repo)
+
+  # And I add an index.lock file to the cloned repo git index
+  touch ${TEST_GIT_CACHE_DIR}/index-locked-repo/small_repo/.git/index.lock
+
+  # And I re-declare the git cache rule with a new commit to trigger invalidation
+  recreate_git_cached_rule_for_small_repo \
+    "commit = '${new_commit}'" \
+    "cache_directory = '${TEST_GIT_CACHE_DIR}/index-locked-repo'"
+
+  # And I run the shell binary target label again
+  bazel run ${target_label} >&${TEST_log} ||
+    echo "Expected to succeed by removing the index.lock file from the git cached folder"
+
+  # Then I expect to receive the updated response from the new commit
+  assert_expect_log "correct dorothy, we are in bazel world"
+  after_test
+}
+
 prepare_test_repositories ${REPOS_DIR}
 utils_log_tests_suite_header "git_cached_repository should"
 
@@ -161,3 +195,4 @@ test_cached_dir_created_as_expected
 test_first_checkout_is_successful
 test_checkout_post_fetch_is_successful
 test_fetch_retry_count_retries_num_is_as_expected
+test_checkout_on_cached_repo_with_index_lock_file_to_succeed
