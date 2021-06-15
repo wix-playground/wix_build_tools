@@ -15,7 +15,7 @@ function prepare_test_repositories() {
     rm -rf ${REPOS_DIR}
   fi
 
-  if [[ -d ${repos_dir} ]]; then
+  if [[ -d ${REPOS_DIR} ]]; then
     log_info "Repositories folder is already initialized, skipping"
   fi
 

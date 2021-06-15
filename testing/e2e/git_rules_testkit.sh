@@ -89,7 +89,7 @@ EOF
 
 function create_sh_binary_ref_small_repo() {
   target_name=quote_reader
-  target_label="quotes:${target_name}"
+  target_label="//quotes:${target_name}"
 
   mkdir -p quotes
   cat >quotes/BUILD.bazel <<EOF
