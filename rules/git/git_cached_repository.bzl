@@ -96,15 +96,48 @@ def _should_clone_repo(repo_ctx, repo_local_cache_path):
         ]
         st = repo_ctx.execute(args, quiet = True)
         if st.return_code == 0:
-            stripped_url = st.stdout.strip().replace("\n", "")
+            git_url = st.stdout.strip().replace("\n", "")
+            repo_rule_url = repo_ctx.attr.remote_url
 
             # In case remote url differ, a clone is required
-            return not stripped_url == repo_ctx.attr.remote_url
+            if not _is_repo_urls_equal(repo_ctx, git_url, repo_rule_url):
+                return True
         else:
-            fail(
-                "Failed to verify local git repository cached folder. name: {}, error: {}"
-                    .format(repo_ctx.name, st.stderr),
-            )
+            _log(repo_ctx, "identified an invalid remote origin url on local git index. name: {}, error: {}"
+                .format(repo_ctx.name, st.stderr))
+            return True
+
+        return not _is_valid_git_index(repo_ctx, repo_local_cache_path)
+
+def _is_repo_urls_equal(repo_ctx, git_url, rule_url):
+    same_repo_url = git_url == rule_url
+
+    if same_repo_url:
+        _log(repo_ctx, "git remote origin url and repository rule remote_url are the same. name: {}"
+            .format(repo_ctx.name))
+    else:
+        _log(repo_ctx, "git remote origin url and repository rule remote_url are different. name: {}"
+            .format(repo_ctx.name))
+
+    return same_repo_url
+
+def _is_valid_git_index(repo_ctx, repo_local_cache_path):
+    args = [
+        "git",
+        "-C",
+        repo_local_cache_path,
+        "log",
+        "-n",
+        "1",
+        "--pretty=format:%H",
+    ]
+
+    st = repo_ctx.execute(args, quiet = True)
+    if st.return_code != 0:
+        _log(repo_ctx, "identified an invalid local git index. name: {}, error: {}"
+            .format(repo_ctx.name, st.stderr))
+
+    return st.return_code == 0
 
 def _create_local_cache_folder_for_repo(repo_ctx, repo_local_cache_path):
     """ Create a local folder, clear previous one if existed before

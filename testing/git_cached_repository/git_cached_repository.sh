@@ -41,7 +41,7 @@ function test_cached_dir_created_as_expected() {
   # And I create a shell library to reference the git cache rule
   target_label=$(create_sh_lib_ref_small_repo)
 
-  # And I build the shell library target label
+  # When I build the shell library target label
   bazel build ${target_label} >&${TEST_log} ||
     echo "Expected git cached directory to get created successfully"
 
@@ -60,7 +60,7 @@ function test_cached_default_dir_created_as_expected() {
   # And I create a shell library to reference the git cache rule
   target_label=$(create_sh_lib_ref_small_repo)
 
-  # And I build the shell library target label
+  # When I build the shell library target label
   bazel build ${target_label} >&${TEST_log} ||
     echo "Expected git cached default directory to get created successfully"
 
@@ -80,7 +80,7 @@ function test_first_checkout_is_successful() {
   # And I create a shell library to reference the git cache rule
   target_label=$(create_sh_binary_ref_small_repo)
 
-  # And I run the shell binary target label
+  # When I run the shell binary target label
   bazel run ${target_label} >&${TEST_log} ||
     echo "Expected to successfully fetch repo by commit hash"
 
@@ -115,7 +115,7 @@ function test_checkout_post_fetch_is_successful() {
     "commit = '${new_commit}'" \
     "cache_directory = '${TEST_GIT_CACHE_DIR}'"
 
-  # And I run the shell binary target label again
+  # When I run the shell binary target label again
   bazel run ${target_label} >&${TEST_log} ||
     echo "Expected to fail on 1st checkout, fetch latest changes and succeed on the 2nd checkout"
 
@@ -141,7 +141,7 @@ function test_fetch_retry_count_retries_num_is_as_expected() {
   # And I create a shell library to reference the git cache rule
   target_label=$(create_sh_binary_ref_small_repo)
 
-  # And I run the shell binary target label
+  # When I run the shell binary target label
   bazel run ${target_label} >&${TEST_log} || true # This is negative scenario, we expect a failure
 
   # Then I expect to count x3 retries attempts
@@ -178,13 +178,82 @@ function test_checkout_on_cached_repo_with_index_lock_file_to_succeed() {
     "commit = '${new_commit}'" \
     "cache_directory = '${TEST_GIT_CACHE_DIR}/index-locked-repo'"
 
-  # And I run the shell binary target label again
+  # When I run the shell binary target label again
   bazel run ${target_label} >&${TEST_log} ||
     echo "Expected to succeed by removing the index.lock file from the git cached folder"
 
   # Then I expect to receive the updated response from the new commit
   assert_expect_log "correct dorothy, we are in bazel world"
   after_test
+}
+
+function test_force_clone_when_there_is_an_invalid_remote_origin() {
+  before_test "test_force_clone_when_there_is_an_invalid_remote_origin"
+
+  # Given I create a custom cache dir with a blank git index without setting remote origin
+  cached_repo_dir="${TEST_GIT_CACHE_DIR}/invalid-remote-origin"
+  git_init_fresh_index "${cached_repo_dir}/small_repo"
+
+  # And I declare a git cache rule with custom cache directory
+  create_git_cached_rule_for_small_repo \
+    "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'" \
+    "cache_directory = '${cached_repo_dir}'"
+
+  # And I create a shell library to reference the git cache rule
+  target_label=$(create_sh_binary_ref_small_repo)
+
+  # And I allow verbosity for the git cached worker
+  export GIT_CACHED_VERBOSE=True
+
+  # When I run the shell binary target label
+  bazel run ${target_label} >&${TEST_log} ||
+    echo "Expected to succeed by re-creating the repository git cached folder"
+
+  # Then I expect to identify an invalid remote origin error log
+  assert_expect_log "identified an invalid remote origin url on local git index"
+
+  # And I expect a fresh clone to succeed with logging the response value at the end of the run
+  assert_expect_log "toto, I have a feeling we are not in maven anymore"
+  after_test
+  unset GIT_CACHED_VERBOSE
+}
+
+# Examples for invalid git index:
+#   - fatal: your current branch 'master' does not have any commits yet
+#     This error can trigger after a user is aborting the build process after git init of a cached repo
+function test_force_clone_when_git_index_is_invalid() {
+  before_test "test_force_clone_when_git_index_is_invalid"
+
+  # Given I create a custom cache dir with a blank git index using only git init
+  cached_repo_dir="${TEST_GIT_CACHE_DIR}/invalid-index-repo"
+  git_init_fresh_index "${cached_repo_dir}/small_repo"
+
+  # And I set small_repo repo path as the remote origin
+  git_remote_add_origin "${cached_repo_dir}/small_repo" "${REPO_SMALL_DIR}"
+
+  # And I declare a git cache rule with custom cache directory and remote_url
+  create_git_cached_rule_for_small_repo \
+    "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'" \
+    "cache_directory = '${cached_repo_dir}'" \
+    "remote_url = '${REPO_SMALL_DIR}'"
+
+  # And I create a shell library to reference the git cache rule
+  target_label=$(create_sh_binary_ref_small_repo)
+
+  # And I allow verbosity for the git cached worker
+  export GIT_CACHED_VERBOSE=True
+
+  # When I run the shell binary target label
+  bazel run ${target_label} >&${TEST_log} ||
+    echo "Expected to succeed by re-creating the repository git cached folder"
+
+  # Then I expect to identify an invalid git index error log
+  assert_expect_log "identified an invalid local git index"
+
+  # And I expect a fresh clone to succeed with logging the response value at the end of the run
+  assert_expect_log "toto, I have a feeling we are not in maven anymore"
+  after_test
+  unset GIT_CACHED_VERBOSE
 }
 
 prepare_test_repositories ${REPOS_DIR}
@@ -196,3 +265,5 @@ test_first_checkout_is_successful
 test_checkout_post_fetch_is_successful
 test_fetch_retry_count_retries_num_is_as_expected
 test_checkout_on_cached_repo_with_index_lock_file_to_succeed
+test_force_clone_when_there_is_an_invalid_remote_origin
+test_force_clone_when_git_index_is_invalid

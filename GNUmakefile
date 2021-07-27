@@ -12,7 +12,7 @@ run-tests-dockerized: ## Run tests suites dockerized
         -c 'cd /home/wix_build_tools; make run-tests-ci'
 
 # To use on version 3.0.0 of Docker for mac - disable use gRPC FUSE for file sharing in Preferences -> Experimental Features.
-# Debug within the container by using:
+# Debug within the container by using: (run from wix_build_tools root folder)
 #  - docker run -it -v $(PWD):/home/wix_build_tools --entrypoint /bin/sh l.gcr.io/google/bazel:3.5.0
 
 .PHONY: help

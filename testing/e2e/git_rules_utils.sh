@@ -33,3 +33,18 @@ function delete_git_cached_directory() {
     rm -rf "${HOME}/.git-cache"
   fi
 }
+
+function git_init_fresh_index() {
+  cache_dir=$1
+  if [[ (! -z ${cache_dir}) && (! -d ${cache_dir}) ]]; then
+    mkdir -p "${cache_dir}"
+  fi
+
+  /usr/bin/git init "${cache_dir}" >>${TEST_log}
+}
+
+function git_remote_add_origin() {
+  cache_dir=$1
+  origin=$2
+  /usr/bin/git -C "${cache_dir}" remote add origin "${origin}" >>${TEST_log}
+}
