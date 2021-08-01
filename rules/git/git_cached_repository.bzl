@@ -73,38 +73,79 @@ def _get_local_cache_repo_path(repo_ctx):
     return "{}/{}".format(repo_ctx.attr.cache_directory, repo_ctx.name)
 
 def _should_clone_repo(repo_ctx, repo_local_cache_path):
-    """ Checks if a repository clone exists locally by verifying it has the .git folder path on local cache
-        and that remote url is as specified on the rules attributes
+    return not _is_git_index_exists(repo_ctx, repo_local_cache_path) or \
+           not _is_origin_match_repo_url(repo_ctx, repo_local_cache_path) or \
+           not _is_valid_git_index(repo_ctx, repo_local_cache_path)
+
+def _is_git_index_exists(repo_ctx, repo_local_cache_path):
+    """ Checks that a local git index exists at the repository cache path
 
         Args:
             repo_ctx: Repository context of the calling rule
             repo_local_cache_path: Path of the repository cache folder
 
         Returns:
-            Indicator if the repository should get cloned locally
+            Boolean indicating if local git index exists for the repository
     """
-    if not repo_ctx.path(repo_local_cache_path + "/.git").exists:
-        return True
-    else:
-        args = [
-            "git",
-            "-C",
-            repo_local_cache_path,
-            "remote",
-            "get-url",
-            "origin",
-        ]
-        st = repo_ctx.execute(args, quiet = True)
-        if st.return_code == 0:
-            stripped_url = st.stdout.strip().replace("\n", "")
+    return repo_ctx.path(repo_local_cache_path + "/.git").exists
 
-            # In case remote url differ, a clone is required
-            return not stripped_url == repo_ctx.attr.remote_url
-        else:
-            fail(
-                "Failed to verify local git repository cached folder. name: {}, error: {}"
-                    .format(repo_ctx.name, st.stderr),
-            )
+def _is_origin_match_repo_url(repo_ctx, repo_local_cache_path):
+    """ Checks that the local git index origin is the same as specified on the rules remote_url attribute
+
+        Args:
+            repo_ctx: Repository context of the calling rule
+            repo_local_cache_path: Path of the repository cache folder
+
+        Returns:
+            Boolean indicating the git index origin url is the same as the rule's remote_url attribute
+    """
+    args = [
+        "git",
+        "-C",
+        repo_local_cache_path,
+        "remote",
+        "get-url",
+        "origin",
+    ]
+    st = repo_ctx.execute(args, quiet = True)
+    if st.return_code == 0:
+        git_url = st.stdout.strip().replace("\n", "")
+        repo_rule_url = repo_ctx.attr.remote_url
+        return _is_repo_urls_equal(repo_ctx, git_url, repo_rule_url)
+    else:
+        _log(repo_ctx, "identified an invalid remote origin url on local git index. name: {}, error: {}"
+            .format(repo_ctx.name, st.stderr))
+        return False
+
+def _is_repo_urls_equal(repo_ctx, git_url, rule_url):
+    same_repo_url = git_url == rule_url
+
+    if same_repo_url:
+        _log(repo_ctx, "git remote origin url and repository rule remote_url are the same. name: {}"
+            .format(repo_ctx.name))
+    else:
+        _log(repo_ctx, "git remote origin url and repository rule remote_url are different. name: {}"
+            .format(repo_ctx.name))
+
+    return same_repo_url
+
+def _is_valid_git_index(repo_ctx, repo_local_cache_path):
+    args = [
+        "git",
+        "-C",
+        repo_local_cache_path,
+        "log",
+        "-n",
+        "1",
+        "--pretty=format:%H",
+    ]
+
+    st = repo_ctx.execute(args, quiet = True)
+    if st.return_code != 0:
+        _log(repo_ctx, "identified an invalid local git index. name: {}, error: {}"
+            .format(repo_ctx.name, st.stderr))
+
+    return st.return_code == 0
 
 def _create_local_cache_folder_for_repo(repo_ctx, repo_local_cache_path):
     """ Create a local folder, clear previous one if existed before
