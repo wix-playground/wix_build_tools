@@ -73,11 +73,9 @@ def _get_local_cache_repo_path(repo_ctx):
     return "{}/{}".format(repo_ctx.attr.cache_directory, repo_ctx.name)
 
 def _should_clone_repo(repo_ctx, repo_local_cache_path):
-    index_missing = not _is_git_index_exists(repo_ctx, repo_local_cache_path)
-    origin_and_repo_url_mismatch = not _is_origin_match_repo_url(repo_ctx, repo_local_cache_path)
-    index_invalid = not _is_valid_git_index(repo_ctx, repo_local_cache_path)
-
-    return index_missing or origin_and_repo_url_mismatch or index_invalid
+    return not _is_git_index_exists(repo_ctx, repo_local_cache_path) or \
+           not _is_origin_match_repo_url(repo_ctx, repo_local_cache_path) or \
+           not _is_valid_git_index(repo_ctx, repo_local_cache_path)
 
 def _is_git_index_exists(repo_ctx, repo_local_cache_path):
     """ Checks that a local git index exists at the repository cache path
