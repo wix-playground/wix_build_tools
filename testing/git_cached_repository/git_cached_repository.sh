@@ -274,7 +274,7 @@ function test_git_version_log_when_debug_enabled() {
   bazel build ${target_label} >&${TEST_log} ||
     echo "Expected git cached directory to get created successfully"
 
-  # Then I expect the repository to be cached successfully
+  # Then I expect git version to get logged successfully
   assert_expect_log "git version"
   after_test
   unset GIT_CACHED_VERBOSE
