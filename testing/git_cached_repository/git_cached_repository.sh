@@ -256,6 +256,30 @@ function test_force_clone_when_git_index_is_invalid() {
   unset GIT_CACHED_VERBOSE
 }
 
+function test_git_version_log_when_debug_enabled() {
+  before_test "test_git_version_log_when_debug_enabled"
+
+  # Given I declare a git cache rule with custom cache directory
+  create_git_cached_rule_for_small_repo \
+    "commit = '014459e6361b66a7b210758d4bf93f3a46ca5e88'" \
+    "cache_directory = '${TEST_GIT_CACHE_DIR}'"
+
+  # And I create a shell library to reference the git cache rule
+  target_label=$(create_sh_lib_ref_small_repo)
+
+  # And I allow log verbosity
+  export GIT_CACHED_VERBOSE=True
+
+  # When I build the shell library target label
+  bazel build ${target_label} >&${TEST_log} ||
+    echo "Expected git cached directory to get created successfully"
+
+  # Then I expect git version to get logged successfully
+  assert_expect_log "git version"
+  after_test
+  unset GIT_CACHED_VERBOSE
+}
+
 prepare_test_repositories ${REPOS_DIR}
 utils_log_tests_suite_header "git_cached_repository should"
 
@@ -267,3 +291,4 @@ test_fetch_retry_count_retries_num_is_as_expected
 test_checkout_on_cached_repo_with_index_lock_file_to_succeed
 test_force_clone_when_there_is_an_invalid_remote_origin
 test_force_clone_when_git_index_is_invalid
+test_git_version_log_when_debug_enabled

@@ -56,6 +56,12 @@ def _log(repo_ctx, message, report_progress = False):
     if _is_verbosity_enabled(repo_ctx):
         print(message)
 
+def _log_git_version(repo_ctx):
+    if _is_verbosity_enabled(repo_ctx):
+        args = ["git", "version"]
+        st = repo_ctx.execute(args, quiet = True)
+        _log(repo_ctx, st.stdout)
+
 def _get_local_cache_repo_path(repo_ctx):
     """ Return a default local path to clone the repository into else return the cache_directory attribute if supplied
         (default location: $HOME/.git-cache/<repo-name>)
@@ -251,6 +257,8 @@ def _checkout_or_fetch(repo_ctx, repo_local_cache_path):
                 )
 
 def _git_cached_repository_implementation(repo_ctx):
+    _log_git_version(repo_ctx)
+
     _log(
         repo_ctx,
         "Retrieving external sources at commit {}".format(
